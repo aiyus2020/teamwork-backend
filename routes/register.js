@@ -4,6 +4,7 @@ const client = require("../models/db");
 const bycrypt = require("bcrypt");
 const jwtGenerator = require("../utlis/jwtGenerator");
 
+//register route
 router.post("/api/v1/register", async (req, res) => {
   try {
     const {
@@ -52,7 +53,7 @@ router.post("/api/v1/register", async (req, res) => {
       data: {
         message: "user account successfully created",
         token,
-        userId: id,
+        id,
       },
     });
   } catch (error) {
