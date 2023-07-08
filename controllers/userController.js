@@ -21,7 +21,7 @@ async function register(req, res) {
     ]);
 
     if (user.rows.length !== 0) {
-      return res.status(401).send("user already exist");
+      return res.status(401).send("user already exist, try again");
     }
 
     //encrypt/hash password
