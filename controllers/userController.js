@@ -5,7 +5,6 @@ const jwtGenerator = require("../utlis/jwtGenerator");
 async function register(req, res) {
   try {
     const {
-      id,
       email,
       password,
       firstname,
