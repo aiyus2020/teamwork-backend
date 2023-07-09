@@ -1,39 +1,38 @@
 const client = require("../models/db");
 const bycrypt = require("bcrypt");
 const jwtGenerator = require("../utlis/jwtGenerator");
-//register function
-async function register(req, res) {
-  try {
-    const {
-      email,
-      password,
-      firstname,
-      lastname,
-      gender,
-      jobrole,
-      department,
-      address,
-    } = req.body;
-    //check/validate if user exist in the databasa
-    const user = await client.query("SELECT * FROM register WHERE email = $1", [
-      email,
-    ]);
+const { user, userExist, newUser } = require("../queries/userQuery");
 
-    if (user.rows.length !== 0) {
-      return res.status(401).send("user already exist, try again");
-    }
+class AuthController {
+  //register function
+  static async register(req, res) {
+    try {
+      const {
+        email,
+        password,
+        firstname,
+        lastname,
+        gender,
+        jobrole,
+        department,
+        address,
+      } = req.body;
+      //check/validate if user exist in the databasa
+      const myuser = await client.query(user, [email]);
 
-    //encrypt/hash password
+      if (myuser.rows.length !== 0) {
+        return res.status(401).send("user already exist, try again");
+      }
 
-    const saltRound = 10;
-    const salt = await bycrypt.genSalt(saltRound);
+      //encrypt/hash password
 
-    const hashedPassword = await bycrypt.hash(password, salt);
+      const saltRound = 10;
+      const salt = await bycrypt.genSalt(saltRound);
 
-    // creating new user
-    const newUser = await client.query(
-      "INSERT INTO register (email, password, firstname, lastname, gender, jobrole, department,address) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *",
-      [
+      const hashedPassword = await bycrypt.hash(password, salt);
+
+      // creating new user
+      const Newuser = await client.query(newUser, [
         email,
         hashedPassword,
         firstname,
@@ -42,55 +41,53 @@ async function register(req, res) {
         jobrole,
         department,
         address,
-      ]
-    );
-    const token = jwtGenerator(newUser.rows[0].id);
-    res.json({
-      status: "success",
-      data: {
-        message: "user account successfully created",
-        token,
+      ]);
+      const token = jwtGenerator(Newuser.rows[0].id);
+      res.json({
+        status: "success",
+        data: {
+          message: "user account successfully created",
+          token,
 
-        id: newUser.rows[0].id,
-      },
-    });
-  } catch (error) {
-    console.error({ status: "error", errro: error });
+          id: newUser.rows[0].id,
+        },
+      });
+    } catch (error) {
+      console.error({ status: "error", errro: error });
+    }
+  }
+
+  //login function
+  static async login(req, res) {
+    try {
+      const { email, password, id } = req.body;
+      //check if user exist
+      const Userexist = await client.query(userExist, [email]);
+      if (Userexist.rows[0].email === 0) {
+        return res.status(401).send("password or email incorrect");
+      }
+
+      //check if hashed password in the database is same with user password
+      const validPassword = await bycrypt.compare(
+        password, //user
+        Userexist.rows[0].password //database
+      );
+      if (!validPassword) {
+        return res.status(401).json("password or email is incorrect");
+      }
+
+      const token = jwtGenerator(Userexist.rows[0].id);
+      res.json({
+        status: "success",
+        data: {
+          message: "user account successfully login",
+          token,
+          id: Userexist.rows[0].id,
+        },
+      });
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 }
-
-//login function
-async function login(req, res) {
-  try {
-    const { email, password, id } = req.body;
-    //check if user exist
-    const user = await client.query("SELECT * FROM register WHERE email=$1", [
-      email,
-    ]);
-    if (user.rows[0].email === 0) {
-      return res.status(401).send("password or email incorrect");
-    }
-
-    //check if hashed password in the database is same with user password
-    const validPassword = await bycrypt.compare(
-      password, //user
-      user.rows[0].password //database
-    );
-    if (!validPassword) {
-      return res.status(401).json("password or email is incorrect");
-    }
-
-    const token = jwtGenerator(user.rows[0].id);
-    res.json({
-      status: "success",
-      data: {
-        message: "user account successfully login",
-        token,
-        id: user.rows[0].id,
-      },
-    });
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-module.exports = { register, login };
+module.exports = AuthController;
