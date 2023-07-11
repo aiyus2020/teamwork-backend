@@ -10,6 +10,8 @@ app.use("/", user);
 
 const PORT = process.env.PORT || 5000;
 //listening for server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
+
+module.exports = server;

@@ -5,7 +5,8 @@ const { user, userExist, newUser } = require("../queries/userQuery");
 
 class AuthController {
   //register function
-  static async register(req, res) {
+
+  async register(req, res) {
     try {
       const {
         email,
@@ -18,9 +19,9 @@ class AuthController {
         address,
       } = req.body;
       //check/validate if user exist in the databasa
-      const myuser = await client.query(user, [email]);
+      const myUser = await client.query(user, [email]);
 
-      if (myuser.rows.length !== 0) {
+      if (myUser.rows.length !== 0) {
         return res.status(401).send("user already exist, try again");
       }
 
@@ -32,7 +33,7 @@ class AuthController {
       const hashedPassword = await bycrypt.hash(password, salt);
 
       // creating new user
-      const Newuser = await client.query(newUser, [
+      const newUsers = await client.query(newUser, [
         email,
         hashedPassword,
         firstname,
@@ -42,47 +43,47 @@ class AuthController {
         department,
         address,
       ]);
-      const token = jwtGenerator(Newuser.rows[0].id);
+      const token = jwtGenerator(newUsers.rows[0].id);
       res.json({
         status: "success",
         data: {
           message: "user account successfully created",
           token,
 
-          id: newUser.rows[0].id,
+          id: newUsers.rows[0].id,
         },
       });
     } catch (error) {
-      console.error({ status: "error", errro: error });
+      console.error(error.message);
     }
   }
 
   //login function
-  static async login(req, res) {
+  async login(req, res) {
     try {
-      const { email, password, id } = req.body;
+      const { email, password } = req.body;
       //check if user exist
-      const Userexist = await client.query(userExist, [email]);
-      if (Userexist.rows[0].email === 0) {
+      const uExist = await client.query(userExist, [email]);
+      if (uExist.rows[0].email === 0) {
         return res.status(401).send("password or email incorrect");
       }
 
       //check if hashed password in the database is same with user password
       const validPassword = await bycrypt.compare(
         password, //user
-        Userexist.rows[0].password //database
+        uExist.rows[0].password //database
       );
       if (!validPassword) {
         return res.status(401).json("password or email is incorrect");
       }
 
-      const token = jwtGenerator(Userexist.rows[0].id);
+      const token = jwtGenerator(uExist.rows[0].id);
       res.json({
         status: "success",
         data: {
           message: "user account successfully login",
           token,
-          id: Userexist.rows[0].id,
+          id: uExist.rows[0].id,
         },
       });
     } catch (error) {
@@ -90,4 +91,5 @@ class AuthController {
     }
   }
 }
-module.exports = AuthController;
+
+module.exports = new AuthController();
