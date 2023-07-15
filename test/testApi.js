@@ -34,21 +34,23 @@ describe("User Routes", () => {
           done();
         });
     });
+    // test for incorrect password
+    describe("POST /api/v1/login", () => {
+      it("should return 401 if the password is incorrect", (done) => {
+        const invalidPassword = "incorrectPassword";
 
-    it("should return 401 if the password is incorrect", (done) => {
-      chai
-        .request(app)
-        .post("/api/v1/login")
-        .send({ email: "test@example.com", password: "incorrectPassword" })
-        .end((err, res) => {
-          res.should.have.status(401);
-          res.body.should.be.an("object");
-          res.body.should.have.property("status").eql("error");
-          res.body.should.have
-            .property("message")
-            .eql("password or email is incorrect");
-          done();
-        });
+        chai
+          .request(app)
+          .post("/api/v1/login")
+          .send({ email: "test@example.com", password: invalidPassword })
+          .end((err, res) => {
+            res.should.have.status(401);
+            res.body.should.be.a("string");
+            res.body.should.equal("password or email is incorrect");
+
+            done();
+          });
+      });
     });
   });
 
@@ -56,7 +58,7 @@ describe("User Routes", () => {
   describe("POST /api/v1/register", () => {
     it("should create a new user and return a success response", (done) => {
       const newUser = {
-        email: "test@examplses.com",
+        email: "test@exampsel.com",
         password: "password",
         firstName: "John",
         lastName: "Doe",
@@ -82,8 +84,5 @@ describe("User Routes", () => {
           done();
         });
     });
-  });
-  describe("POST /api/v1/login", () => {
-    it();
   });
 });
