@@ -8,7 +8,7 @@ const swaggerDocument = {
   servers: [
     {
       url: "http://localhost:5000",
-      description: "Local development server",
+      description: "dev server",
     },
   ],
   paths: {

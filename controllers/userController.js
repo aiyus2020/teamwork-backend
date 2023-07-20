@@ -6,6 +6,7 @@ const {
   newUserQuery,
   userExistQuery,
 } = require("../queries/userQuery");
+const validator = require("validator");
 
 class AuthController {
   //register function
@@ -59,6 +60,7 @@ class AuthController {
       });
     } catch (error) {
       console.error(error.message);
+      return res.status(500).json("Internal Server Error");
     }
   }
 
@@ -66,6 +68,11 @@ class AuthController {
   async login(req, res) {
     try {
       const { email, password } = req.body;
+      // Validate the email format
+      if (!validator.isEmail(email)) {
+        return res.status(400).json("Invalid email format");
+      }
+
       //check if user exist
       const userExist = await client.query(userExistQuery, [email]);
       if (userExist.rows[0].email === 0) {
@@ -93,6 +100,7 @@ class AuthController {
       });
     } catch (error) {
       console.error(error.message);
+      return res.status(500).json("Internal Server Error");
     }
   }
 }
