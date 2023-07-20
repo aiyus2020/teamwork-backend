@@ -9,6 +9,6 @@ const newUserQuery =
 //check if user exist for login
 const userExistQuery = "SELECT * FROM register WHERE email=$1";
 //delete user query
-const deleteUserQuery = "DELETE FROM register WHERE id = $1";
+const deleteUserQuery = "DELETE FROM register WHERE id=$1";
 
 module.exports = { userQuery, newUserQuery, userExistQuery, deleteUserQuery };
