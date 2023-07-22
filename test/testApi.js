@@ -3,7 +3,7 @@ const chaiHttp = require("chai-http");
 const app = require("../server");
 const { describe, it, after } = require("mocha");
 const { deleteUserQuery } = require("../queries/userQuery");
-const client = require("../models/db");
+const client = require("../utlis/dbMigration");
 // Configure chai
 chai.use(chaiHttp);
 chai.should();

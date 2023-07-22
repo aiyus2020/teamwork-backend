@@ -1,9 +1,21 @@
-const client = require("../models/db");
+const { Client } = require("pg");
+const client = new Client({
+  user: "postgres",
+  host: "localhost",
+  database: "Teamwork",
+  password: "aiyudubie10",
+  port: 5432,
+});
 
-async function registerTable() {
+async function dbMigration() {
   try {
+    await client.connect(() => {
+      console.log("connected");
+    }); // Connect to the database
+
+    // Register Table
     const createUsersTableQuery = `
-      CREATE TABLE IF NOT EXISTS users (
+      CREATE TABLE IF NOT EXISTS register (
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
@@ -15,14 +27,23 @@ async function registerTable() {
         address VARCHAR(255)
       );
     `;
-
     await client.query(createUsersTableQuery);
-    console.log("Users table created successfully.");
+
+    // Gifs Table
+    const gifUpload = `
+      CREATE TABLE IF NOT EXISTS upload (
+        gifs_id SERIAL PRIMARY KEY,
+        title VARCHAR(225),
+        image_url VARCHAR(225)
+      );
+    `;
+    await client.query(gifUpload);
   } catch (error) {
-    console.error("Error creating users table:", error.message);
+    console.error("Error during migration:", error.message);
   } finally {
-    client.end();
+    client.end(); // Close the database connection after all queries are executed
   }
 }
 
-registerTable();
+// Call the migration function
+dbMigration();
