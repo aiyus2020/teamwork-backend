@@ -4,6 +4,6 @@ const GifsController = require("../controllers/gifsController");
 const authenticate = require("../middleware/authmiddleware");
 //gifsupload route
 
-router.post("/api/v1/gifs_upload", GifsController.uploadGif);
+router.post("/api/v1/gifs_upload", authenticate, GifsController.uploadGif);
 
 module.exports = router;
