@@ -1,4 +1,4 @@
-const client = require("../utlis/dbMigration");
+const client = require("../models/db");
 const bycrypt = require("bcrypt");
 const jwtGenerator = require("../utlis/jwtGenerator");
 const {
@@ -98,13 +98,6 @@ class AuthController {
           id: userExist.rows[0].id,
         },
       });
-    } catch (error) {
-      console.error(error.message);
-      return res.status(500).json("Internal Server Error");
-    }
-  }
-  async postgifs(req, res) {
-    try {
     } catch (error) {
       console.error(error.message);
       return res.status(500).json("Internal Server Error");

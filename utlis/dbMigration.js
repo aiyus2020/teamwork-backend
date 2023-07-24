@@ -9,9 +9,7 @@ const client = new Client({
 
 async function dbMigration() {
   try {
-    await client.connect(() => {
-      console.log("connected");
-    }); // Connect to the database
+    await client.connect(); // Connect to the database
 
     // Register Table
     const createUsersTableQuery = `
@@ -33,6 +31,7 @@ async function dbMigration() {
     const gifUpload = `
       CREATE TABLE IF NOT EXISTS upload (
         gifs_id SERIAL PRIMARY KEY,
+        image VARCHAR,
         title VARCHAR(225),
         image_url VARCHAR(225)
       );
