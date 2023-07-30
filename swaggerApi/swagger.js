@@ -148,6 +148,153 @@ const swaggerDocument = {
         },
       },
     },
+    "/api/v1/gifs_upload": {
+      post: {
+        summary: "Upload a new GIF",
+        requestBody: {
+          required: true,
+          content: {
+            "multipart/form-data": {
+              schema: {
+                type: "object",
+                properties: {
+                  image: {
+                    type: "string",
+                    format: "binary",
+                  },
+                  title: {
+                    type: "string",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Success",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "string",
+                    },
+                    data: {
+                      type: "object",
+                      properties: {
+                        gifs_id: {
+                          type: "string",
+                        },
+                        message: {
+                          type: "string",
+                        },
+                        createdOn: {
+                          type: "string",
+                        },
+                        title: {
+                          type: "string",
+                        },
+                        imageUrl: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: "Bad Request",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: {
+            description: "Internal Server Error",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/api/v1/deletegifs/{id}": {
+      delete: {
+        summary: "Delete a GIF by ID",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            required: true,
+            description: "The ID of the GIF to delete",
+            schema: {
+              type: "string",
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Success",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "string",
+                    },
+                    data: {
+                      type: "object",
+                      properties: {
+                        message: {
+                          type: "string",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          500: {
+            description: "Internal Server Error",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    error: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 };
 

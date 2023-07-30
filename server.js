@@ -6,23 +6,30 @@ const gifs = require("./routes/gifsRoute");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swaggerApi/swagger");
 const fileUpload = require("express-fileupload");
-//middleware
+
+// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
 app.use(
   fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/",
+    limits: { fileSize: 50 * 1024 * 1024 }, // Limit file size to 50MB
   })
 );
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use(cors());
 
-app.use(express.urlencoded({ extended: true }));
+// API documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Routes
 app.use("/", gifs);
 app.use("/", user);
 
 const PORT = process.env.PORT || 5000;
-//listening for server
+
+// Listening for server
 const server = app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });

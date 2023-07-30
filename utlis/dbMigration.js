@@ -22,20 +22,24 @@ async function dbMigration() {
         gender VARCHAR(10),
         job_role VARCHAR(100),
         department VARCHAR(100),
-        address VARCHAR(255)
-      );
-    `;
+        address VARCHAR(255),
+        
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )`;
     await client.query(createUsersTableQuery);
 
     // Gifs Table
     const gifUpload = `
       CREATE TABLE IF NOT EXISTS upload (
         gifs_id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES register(id),
         image VARCHAR,
         title VARCHAR(225),
-        image_url VARCHAR(225)
-      );
-    `;
+        image_url VARCHAR(225),
+        cloud_public_id VARCHAR,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`;
     await client.query(gifUpload);
   } catch (error) {
     console.error("Error during migration:", error.message);

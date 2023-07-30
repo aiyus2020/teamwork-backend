@@ -29,6 +29,10 @@ class AuthController {
       if (myUser.rows.length !== 0) {
         return res.status(401).send("user already exist, try again");
       }
+      // Validate the email format
+      if (!validator.isEmail(email)) {
+        return res.status(400).send("Invalid email format");
+      }
 
       //encrypt/hash password
 
@@ -68,10 +72,6 @@ class AuthController {
   async login(req, res) {
     try {
       const { email, password } = req.body;
-      // Validate the email format
-      if (!validator.isEmail(email)) {
-        return res.status(400).json("Invalid email format");
-      }
 
       //check if user exist
       const userExist = await client.query(userExistQuery, [email]);
