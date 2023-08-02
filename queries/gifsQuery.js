@@ -2,7 +2,7 @@ const client = require("../models/db");
 //post new gifs
 
 const newGifsQuery =
-  "INSERT INTO upload (user_id,title, image, image_url,cloud_public_id) VALUES ($1, $2,$3,$4,$5) RETURNING *";
+  "INSERT INTO upload (user_id,title, image_url,cloud_public_id) VALUES ($1, $2,$3,$4) RETURNING *";
 //delete gifs
 
 //find by id

@@ -19,16 +19,15 @@ class GifsController {
         secure: true,
       });
 
-      // Get the secure URL of the uploaded image
+      // Get the secure URL and the publicID of the uploaded image
       const imageUrl = result.secure_url;
-      console.log(result);
+      const public_id = result.public_id;
       // Save the image URL to the database
       const newGifs = await client.query(newGifsQuery, [
         user_id,
         title,
-        image.tempFilePath,
         imageUrl,
-        result.public_id,
+        public_id,
       ]);
 
       res.json({
@@ -50,12 +49,11 @@ class GifsController {
     try {
       const { id } = req.params;
       let upload = await client.query(findId, [id]);
+
+      // delete image from cloudinary first
       await cloudinary.uploader.destroy(upload.rows[0].cloud_public_id);
       await client.query(deleteGifquery, [id]);
 
-      // delete image from cloudinary first
-
-      console.log(upload.rows[0].cloud_public_id);
       res.json({
         status: "success",
         data: {
