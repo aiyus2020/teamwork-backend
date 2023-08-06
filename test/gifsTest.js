@@ -53,7 +53,7 @@ describe("GifsController", () => {
   it("should create a new gif and return success", async () => {
     const newGif = {
       title: "Test Gif",
-      image: "../assets/SmallFullColourGIF.gif",
+      image: "./assets/SmallFullColourGIF.gif",
     };
 
     // Make the HTTP request with the auth token
