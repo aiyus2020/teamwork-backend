@@ -1,9 +1,7 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const app = require("../server");
-const { describe, it, after } = require("mocha");
-const { deleteUserQuery } = require("../queries/userQuery");
-const client = require("../models/db");
+const { describe, it } = require("mocha");
 
 // Configure chai
 chai.use(chaiHttp);
@@ -14,7 +12,7 @@ describe("User Routes", () => {
 
   // Test case for registering a new user and saving the user ID
   it("should create a new user and return a success response", (done) => {
-    const newUser = {
+    const newUsers = {
       email: "test@example.com", // Fix the email address here
       password: "password",
       firstName: "John",
@@ -28,7 +26,7 @@ describe("User Routes", () => {
     chai
       .request(app)
       .post("/api/v1/register")
-      .send(newUser)
+      .send(newUsers)
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.an("object");
@@ -62,12 +60,6 @@ describe("User Routes", () => {
   });
 
   // Test case for deleting the created user after the test
-  after(async () => {
-    if (createdUserId) {
-      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
-    }
-  });
-
   // Test successful login and incorrect password
   it("should log in a user and return a success response", (done) => {
     // Successful login test

@@ -1,4 +1,4 @@
-const client = require("../models/dbMigration");
+const client = require("../models/db");
 
 //check/validate if user exist in the databasa
 const userQuery = "SELECT * FROM register WHERE email = $1";

@@ -2,11 +2,9 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const app = require("../server");
-const { describe, it, after } = require("mocha");
-const { deleteGifquery } = require("../queries/gifsQuery");
-const cloudinary = require("../utlis/cloudinary");
+const { describe, it, before } = require("mocha");
+const { deleteUserQuery } = require("../queries/userQuery");
 const client = require("../models/db");
-
 chai.use(chaiHttp);
 chai.should();
 
@@ -14,12 +12,12 @@ chai.should();
 describe("GifsController", () => {
   //declearing global variablies
   let createdGifId;
-  let testPublicId;
+  let createdUserId;
   let authToken; // Authentication token
 
   before(async () => {
     const newUsers = {
-      email: "test@example.com",
+      email: "test@examples.com",
       password: "password",
       firstName: "John",
       lastName: "Doe",
@@ -29,8 +27,8 @@ describe("GifsController", () => {
       address: "123 Main St",
     };
     const loginUser = {
-      email: "test@example.com",
-      password: "password",
+      email: newUsers.email,
+      password: newUsers.password,
     };
     //register a new user
     await chai
@@ -46,6 +44,7 @@ describe("GifsController", () => {
           .then((res) => {
             const result = res.body;
             authToken = result.data.token; //grab the token from the user
+            createdUserId = result.data.id;
           });
       });
   });
@@ -54,7 +53,7 @@ describe("GifsController", () => {
   it("should create a new gif and return success", async () => {
     const newGif = {
       title: "Test Gif",
-      image: "C:/Users/User/Downloads/SmallFullColourGIF.gif", // Replace with the path to your test gif file
+      image: "../assets/SmallFullColourGIF.gif",
     };
 
     // Make the HTTP request with the auth token
@@ -80,19 +79,18 @@ describe("GifsController", () => {
     createdGifId = res.body.data.gifs_id;
     testPublicId = res.body.data.imageUrl; // Store the public_id for deletion in the next test
   });
-
+  after(async () => {
+    if (createdUserId) {
+      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
+    }
+  });
   // Test case for deleting the created gif and returning success
   it("should delete the created gif and return success", async () => {
-    // Ensure that you have a valid 'createdGifId' to delete
-    if (!createdGifId) {
-      throw new Error("No gif created to delete");
-    }
-
     // Make the HTTP request with the auth token
     const res = await chai
       .request(app)
       .delete(`/api/v1/deletegifs/${createdGifId}`)
-      .set("token", ` ${authToken}`);
+      .set("token", authToken);
 
     res.should.have.status(200);
     res.body.should.be.an("object");
@@ -101,17 +99,5 @@ describe("GifsController", () => {
     res.body.data.should.have
       .property("message")
       .eql("gifs post successfully deleted");
-  });
-
-  // Clean up after the test
-  after(async () => {
-    if (createdGifId) {
-      await client.query(deleteGifquery, [createdGifId]);
-    }
-
-    // Delete the image from Cloudinary
-    if (testPublicId) {
-      await cloudinary.uploader.destroy(testPublicId);
-    }
   });
 });
