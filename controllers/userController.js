@@ -1,18 +1,35 @@
-const client = require("../models/db");
-const bycrypt = require("bcrypt");
+const Joi = require("joi");
+const bcrypt = require("bcrypt");
 const jwtGenerator = require("../utlis/jwtGenerator");
 const {
   userQuery,
   newUserQuery,
   userExistQuery,
 } = require("../queries/userQuery");
-const validator = require("validator");
 
 class AuthController {
-  //register function
-
+  // Register function
   async register(req, res) {
     try {
+      // Validation schema using Joi
+      const schema = Joi.object({
+        email: Joi.string().email().required(),
+        password: Joi.string().min(4).required(),
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required(),
+        gender: Joi.string().required(),
+        jobRole: Joi.string().required(),
+        department: Joi.string().required(),
+        address: Joi.string().required(),
+      });
+
+      // Validate the incoming request body against the schema
+      const { error } = schema.validate(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+      }
+
+      // Extract data from the request body
       const {
         email,
         password,
@@ -23,28 +40,24 @@ class AuthController {
         department,
         address,
       } = req.body;
-      //check/validate if user exist in the databasa
+
+      // Check if user already exists
       const myUser = await client.query(userQuery, [email]);
-
       if (myUser.rows.length !== 0) {
-        return res.status(401).send("user already exist, try again");
-      }
-      // Validate the email format
-      if (!validator.isEmail(email)) {
-        return res.status(400).send("Invalid email format");
+        return res
+          .status(401)
+          .json({ error: "User already exists, try again" });
       }
 
-      //encrypt/hash password
+      // Hash the password
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-      const saltRound = 10;
-      const salt = await bycrypt.genSalt(saltRound);
-
-      const hashedPassWord = await bycrypt.hash(password, salt);
-
-      // creating new user
+      // Create a new user in the database
       const newUsers = await client.query(newUserQuery, [
         email,
-        hashedPassWord,
+        hashedPassword,
         firstName,
         lastName,
         gender,
@@ -52,54 +65,54 @@ class AuthController {
         department,
         address,
       ]);
+
+      // Generate a JWT token for the new user
       const token = jwtGenerator(newUsers.rows[0].id);
       res.json({
         status: "success",
         data: {
-          message: "user account successfully created",
+          message: "User account successfully created",
           token,
-
           id: newUsers.rows[0].id,
         },
       });
-    } catch (error) {
-      console.error(error.message);
+    } catch {
       return res.status(500).json("Internal Server Error");
     }
   }
 
-  //login function
+  // Login function
   async login(req, res) {
     try {
       const { email, password } = req.body;
 
-      //check if user exist
+      // Check if user exists
       const userExist = await client.query(userExistQuery, [email]);
       if (userExist.rows[0].email === 0) {
-        return res.status(401).send("password or email incorrect");
+        return res.status(401).send("Password or email incorrect");
       }
 
-      //check if hashed password in the database is same with user password
-      const validPassword = await bycrypt.compare(
-        password, //user
-        userExist.rows[0].password //database
+      // Check if hashed password in the database matches user password
+      const validPassword = await bcrypt.compare(
+        password, // User's input
+        userExist.rows[0].password // Hashed password from the database
       );
 
       if (!validPassword) {
-        return res.status(401).json("password or email is incorrect");
+        return res.status(401).json("Password or email is incorrect");
       }
 
+      // Generate a JWT token for the existing user
       const token = jwtGenerator(userExist.rows[0].id);
       res.json({
         status: "success",
         data: {
-          message: "user account successfully login",
+          message: "User account successfully login",
           token,
           id: userExist.rows[0].id,
         },
       });
-    } catch (error) {
-      console.error(error.message);
+    } catch {
       return res.status(500).json("Internal Server Error");
     }
   }
