@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const client = require("../models/db");
 const bcrypt = require("bcrypt");
 const jwtGenerator = require("../utlis/jwtGenerator");
 const {
