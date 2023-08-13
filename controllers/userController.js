@@ -1,4 +1,3 @@
-const Joi = require("joi");
 const client = require("../models/db");
 const bcrypt = require("bcrypt");
 const jwtGenerator = require("../utlis/jwtGenerator");
@@ -12,24 +11,6 @@ class AuthController {
   // Register function
   async register(req, res) {
     try {
-      // Validation schema using Joi
-      const schema = Joi.object({
-        email: Joi.string().email().required(),
-        password: Joi.string().min(4).required(),
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        gender: Joi.string().required(),
-        jobRole: Joi.string().required(),
-        department: Joi.string().required(),
-        address: Joi.string().required(),
-      });
-
-      // Validate the incoming request body against the schema
-      const { error } = schema.validate(req.body);
-      if (error) {
-        return res.status(400).json({ error: error.details[0].message });
-      }
-
       // Extract data from the request body
       const {
         email,
@@ -51,8 +32,8 @@ class AuthController {
       }
 
       // Hash the password
-      const saltRounds = 10;
-      const salt = await bcrypt.genSalt(saltRounds);
+
+      const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // Create a new user in the database

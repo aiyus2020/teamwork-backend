@@ -11,7 +11,7 @@ class GifsController {
     try {
       const image = req.files.image; // Access the uploaded file using req.files.image
       const title = req.body.title;
-      const user_id = req.user;
+      const userId = req.user;
 
       // Upload the image to Cloudinary
       const result = await cloudinary.uploader.upload(image.tempFilePath, {
@@ -21,13 +21,13 @@ class GifsController {
 
       // Get the secure URL and the publicID of the uploaded image
       const imageUrl = result.secure_url;
-      const public_id = result.public_id;
+      const publicId = result.public_id;
       // Save the image URL to the database
       const newGifs = await client.query(newGifsQuery, [
-        user_id,
+        userId,
         title,
         imageUrl,
-        public_id,
+        publicId,
       ]);
 
       res.json({
@@ -41,7 +41,6 @@ class GifsController {
         },
       });
     } catch (error) {
-      console.error("Error:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
@@ -61,7 +60,6 @@ class GifsController {
         },
       });
     } catch (error) {
-      console.error("Error:", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   }
