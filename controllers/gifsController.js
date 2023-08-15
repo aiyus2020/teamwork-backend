@@ -15,7 +15,7 @@ class GifsController {
 
       // Upload the image to Cloudinary
       const result = await cloudinary.uploader.upload(image.tempFilePath, {
-        upload_preset: "gifs",
+        upload_preset: "pictures",
         secure: true,
       });
 

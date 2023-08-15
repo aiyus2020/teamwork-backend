@@ -1,11 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const AuthController = require("../controllers/userController");
-const {
-  userSchema,
-  validateMiddleware,
-} = require("../middleware/userValidationMiddleware");
-
+const validateMiddleware = require("../middleware/userValidationMiddleware");
+const userSchema = require("../models/userSchema");
 //register route
 router.post(
   "/api/v1/register",

@@ -1,21 +1,10 @@
 const Joi = require("joi");
-
-// Validation schema using Joi
-const userSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(4).required(),
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
-  gender: Joi.string().required(),
-  jobRole: Joi.string().required(),
-  department: Joi.string().required(),
-  address: Joi.string().required(),
-});
+const userSchema = require("../models/userSchema");
 
 // Validate the incoming request body against the schema
 const validateMiddleware = (schema) => {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body);
+    const { error } = userSchema.validate(req.body);
 
     if (error) {
       res.status(400).json({ error: error.details[0].message });
@@ -25,4 +14,4 @@ const validateMiddleware = (schema) => {
   };
 };
 
-module.exports = { userSchema, validateMiddleware };
+module.exports = validateMiddleware;
