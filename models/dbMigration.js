@@ -23,7 +23,6 @@ async function dbMigration() {
         job_role VARCHAR(100),
         department VARCHAR(100),
         address VARCHAR(255),
-        
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )`;
@@ -38,8 +37,19 @@ async function dbMigration() {
         image_url VARCHAR(225),
         cloud_public_id VARCHAR,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        )`;
+      )`;
     await client.query(gifUpload);
+
+    // Articles Table
+    const articles = `
+      CREATE TABLE IF NOT EXISTS articles (
+        id SERIAL PRIMARY KEY, 
+        user_id INTEGER NOT NULL REFERENCES register(id), 
+        title VARCHAR(225),
+        article TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )`;
+    await client.query(articles);
   } catch (error) {
     console.error("Error during migration:", error.message);
   } finally {

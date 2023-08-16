@@ -18,3 +18,9 @@ CREATE TABLE upload (
   title VARCHAR(225),
   image_url VARCHAR(225)
 );
+CREATE TABLE  articles (
+        id SERIAL PRIMARY KEY, 
+        user_id INTEGER NOT NULL REFERENCES register(id), 
+        title VARCHAR(225),
+        article TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())
