@@ -1,6 +1,6 @@
 -- create_users_table.sql
 
-CREATE TABLE users (
+CREATE TABLE register (
   id SERIAL PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
@@ -23,4 +23,5 @@ CREATE TABLE  articles (
         user_id INTEGER NOT NULL REFERENCES register(id), 
         title VARCHAR(225),
         article TEXT,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())
+        created_at TIMESTAMPTZ NOT NULL  NOW(),
+        updated_at TIMESTAMPTZ NOT NULL  NOW());

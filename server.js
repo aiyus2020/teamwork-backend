@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const user = require("./routes/userRoutes");
 const gifs = require("./routes/gifsRoute");
+const article = require("./routes/articleRoute");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swaggerApi/swagger");
 const fileUpload = require("express-fileupload");
@@ -25,6 +26,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
 app.use("/", gifs);
+app.use("/", article);
 app.use("/", user);
 
 const PORT = process.env.PORT || 5000;

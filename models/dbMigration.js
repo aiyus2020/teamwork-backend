@@ -9,7 +9,9 @@ const client = new Client({
 
 async function dbMigration() {
   try {
-    await client.connect(); // Connect to the database
+    // Connect to the database
+    await client.connect();
+    console.log("Connected");
 
     // Register Table
     const createUsersTableQuery = `
@@ -47,7 +49,8 @@ async function dbMigration() {
         user_id INTEGER NOT NULL REFERENCES register(id), 
         title VARCHAR(225),
         article TEXT,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )`;
     await client.query(articles);
   } catch (error) {

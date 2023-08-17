@@ -1,4 +1,4 @@
-const client = require("../models/db");
+const client = require("../models/dbMigration");
 const {
   newGifsQuery,
   findId,
