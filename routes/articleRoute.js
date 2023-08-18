@@ -9,5 +9,10 @@ router.patch(
   authenticate,
   PostController.editArticle
 );
+router.delete(
+  "/api/v1/delete_article/:id",
+  authenticate,
+  PostController.deleteArticle
+);
 
 module.exports = router;

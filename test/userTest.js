@@ -34,7 +34,7 @@ describe("User Routes", () => {
         res.body.should.have.property("data");
         res.body.data.should.have
           .property("message")
-          .eql("user account successfully created");
+          .eql("User account successfully created");
         res.body.data.should.have.property("token");
         res.body.data.should.have.property("id");
 
@@ -79,7 +79,7 @@ describe("User Routes", () => {
         res.body.should.have.property("data");
         res.body.data.should.have
           .property("message")
-          .eql("user account successfully login");
+          .eql("User account successfully login");
         res.body.data.should.have.property("token");
         res.body.data.should.have.property("id");
         done(); // Call the done callback to signify completion
@@ -97,7 +97,7 @@ describe("User Routes", () => {
       .end((err, res) => {
         res.should.have.status(401);
         res.body.should.be.a("string");
-        res.body.should.equal("password or email is incorrect");
+        res.body.should.equal("Password or email is incorrect");
 
         done(); // Call the done callback to signify completion
       });

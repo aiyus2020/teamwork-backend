@@ -1,4 +1,4 @@
-const client = require("../models/dbMigration");
+const client = require("../models/db");
 const {
   newGifsQuery,
   findId,
@@ -46,6 +46,7 @@ class GifsController {
   }
   async deleteGifs(req, res) {
     try {
+      const userId = req.user;
       const { id } = req.params;
       let upload = await client.query(findId, [id]);
 

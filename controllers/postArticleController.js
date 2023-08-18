@@ -1,5 +1,9 @@
 const client = require("../models/db");
-const { newArticle, updateArticleQuery } = require("../queries/articleQuery");
+const {
+  newArticle,
+  updateArticleQuery,
+  deleteArticleQuery,
+} = require("../queries/articleQuery");
 class PostController {
   async postArticle(req, res) {
     try {
@@ -13,7 +17,7 @@ class PostController {
       res.json({
         status: "success",
         data: {
-          message: "gif image successfully posted",
+          message: "article successfully posted",
           articleId: myArticle.rows[0].id,
           article,
           title,
@@ -51,6 +55,25 @@ class PostController {
       });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  async deleteArticle(req, res) {
+    try {
+      const userId = req.user;
+      const { id } = req.params;
+      const deleteArt = await client.query(deleteArticleQuery, [id]);
+      if (deleteArt.rows.length == 0) {
+        return res.status(400).json({ error: "article not found" });
+      }
+
+      res.json({
+        status: "success",
+        data: {
+          message: "article deleted successfully",
+        },
+      });
+    } catch (error) {
+      res.status(500).json({ error: "internal server Error" });
     }
   }
 }
