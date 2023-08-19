@@ -2,7 +2,9 @@ const { loginPath } = require("../swaggerApi/loginPath");
 const { registerPath } = require("../swaggerApi/registerPath");
 const { uploadPath } = require("../swaggerApi/uploadPath");
 const { deletePath } = require("../swaggerApi/deletePath");
-
+const { postArticlePath } = require("../swaggerApi/postArticlePath");
+const { deleteArticlePath } = require("../swaggerApi/deleteArticlePath");
+const { editArticlePath } = require("../swaggerApi/updateArticlePath");
 const swaggerDocument = {
   openapi: "3.0.0",
   info: {
@@ -21,6 +23,9 @@ const swaggerDocument = {
     ...loginPath,
     ...uploadPath,
     ...deletePath,
+    ...postArticlePath,
+    ...editArticlePath,
+    ...deleteArticlePath,
   },
 };
 
