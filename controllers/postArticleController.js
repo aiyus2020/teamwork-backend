@@ -62,9 +62,6 @@ class PostController {
       const userId = req.user;
       const { id } = req.params;
       const deleteArt = await client.query(deleteArticleQuery, [id]);
-      if (deleteArt.rows.length == 0) {
-        return res.status(400).json({ error: "article not found" });
-      }
 
       res.json({
         status: "success",

@@ -2,7 +2,8 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 const app = require("../server");
 const { describe, it } = require("mocha");
-
+const { deleteUserQuery } = require("../queries/userQuery");
+const client = require("../models/db");
 // Configure chai
 chai.use(chaiHttp);
 chai.should();
@@ -43,6 +44,11 @@ describe("User Routes", () => {
 
         done(); // Call the done callback to signify completion
       });
+  });
+  after(async () => {
+    if (createdUserId) {
+      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
+    }
   });
   // Test for invalid email format
   it("should return 400 if the email is invalid", (done) => {
@@ -101,5 +107,10 @@ describe("User Routes", () => {
 
         done(); // Call the done callback to signify completion
       });
+  });
+  after(async () => {
+    if (createdUserId) {
+      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
+    }
   });
 });
