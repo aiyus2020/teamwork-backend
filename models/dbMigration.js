@@ -11,7 +11,6 @@ async function dbMigration() {
   try {
     // Connect to the database
     await client.connect();
-    console.log("Connected");
 
     // Register Table
     const createUsersTableQuery = `

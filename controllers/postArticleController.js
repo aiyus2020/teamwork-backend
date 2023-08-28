@@ -8,7 +8,7 @@ class PostController {
   async postArticle(req, res) {
     try {
       const { title, article } = req.body;
-      const userId = req.user;
+      const userId = req.user.id;
       const myArticle = await client.query(newArticle, [
         userId,
         title,
@@ -30,7 +30,7 @@ class PostController {
   }
   async editArticle(req, res) {
     try {
-      const userId = req.user;
+      const userId = req.user.id;
       const { id } = req.params;
       const { title, article } = req.body;
 
@@ -59,7 +59,7 @@ class PostController {
   }
   async deleteArticle(req, res) {
     try {
-      const userId = req.user;
+      const userId = req.user.id;
       const { id } = req.params;
       const deleteArt = await client.query(deleteArticleQuery, [id]);
 

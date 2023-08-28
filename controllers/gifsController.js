@@ -11,7 +11,7 @@ class GifsController {
     try {
       const image = req.files.image; // Access the uploaded file using req.files.image
       const title = req.body.title;
-      const userId = req.user;
+      const userId = req.user.id;
 
       // Upload the image to Cloudinary
       const result = await cloudinary.uploader.upload(image.tempFilePath, {
@@ -46,7 +46,7 @@ class GifsController {
   }
   async deleteGifs(req, res) {
     try {
-      const userId = req.user;
+      const userId = req.user.id;
       const { id } = req.params;
       let upload = await client.query(findId, [id]);
 
