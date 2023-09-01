@@ -2,7 +2,8 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 const app = require("../server");
 const { describe, it } = require("mocha");
-
+const { deleteUserQuery } = require("../queries/userQuery");
+const client = require("../models/db");
 // Configure chai
 chai.use(chaiHttp);
 chai.should();
@@ -34,7 +35,7 @@ describe("User Routes", () => {
         res.body.should.have.property("data");
         res.body.data.should.have
           .property("message")
-          .eql("user account successfully created");
+          .eql("User account successfully created");
         res.body.data.should.have.property("token");
         res.body.data.should.have.property("id");
 
@@ -43,6 +44,11 @@ describe("User Routes", () => {
 
         done(); // Call the done callback to signify completion
       });
+  });
+  after(async () => {
+    if (createdUserId) {
+      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
+    }
   });
   // Test for invalid email format
   it("should return 400 if the email is invalid", (done) => {
@@ -79,7 +85,7 @@ describe("User Routes", () => {
         res.body.should.have.property("data");
         res.body.data.should.have
           .property("message")
-          .eql("user account successfully login");
+          .eql("User account successfully login");
         res.body.data.should.have.property("token");
         res.body.data.should.have.property("id");
         done(); // Call the done callback to signify completion
@@ -97,9 +103,14 @@ describe("User Routes", () => {
       .end((err, res) => {
         res.should.have.status(401);
         res.body.should.be.a("string");
-        res.body.should.equal("password or email is incorrect");
+        res.body.should.equal("Password or email is incorrect");
 
         done(); // Call the done callback to signify completion
       });
+  });
+  after(async () => {
+    if (createdUserId) {
+      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
+    }
   });
 });

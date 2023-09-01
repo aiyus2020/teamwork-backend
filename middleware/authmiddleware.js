@@ -19,7 +19,7 @@ module.exports = async function authenticate(req, res, next) {
     }
 
     // Attach the fetched user data to the req.user property
-    req.user = rows[0].id;
+    req.user = rows[0];
 
     next();
   } catch (err) {

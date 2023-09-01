@@ -1,17 +1,17 @@
-//import all libraries and files
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const app = require("../server");
-const { describe, it, before } = require("mocha");
 const { deleteUserQuery } = require("../queries/userQuery");
+
+const { describe, it, before } = require("mocha");
 const client = require("../models/db");
+
 chai.use(chaiHttp);
 chai.should();
 
-// test for uploading and deleting gifs
-describe("GifsController", () => {
+describe("articles", () => {
   //declearing global variablies
-  let createdGifId;
+  let createdArticleId;
   let createdUserId;
   let authToken; // Authentication token
 
@@ -43,58 +43,74 @@ describe("GifsController", () => {
           .send(loginUser)
           .then((res) => {
             const result = res.body;
-            authToken = result.data.token; //grab the token from the user
             createdUserId = result.data.id;
+            authToken = result.data.token; //grab the token from the user
           });
       });
   });
-
   // Test case for uploading a new gif and returning success
-  it("should create a new gif and return success", async () => {
-    const newGif = {
-      title: "Test Gif",
-      image: "./assets/SmallFullColourGIF.gif",
+  it("should create a new post and return success", async () => {
+    const newArticle = {
+      title: "Test article",
+      article: "my article",
     };
 
     // Make the HTTP request with the auth token
     const res = await chai
       .request(app)
-      .post("/api/v1/gifs_upload")
+      .post("/api/v1/post_article")
       .set("token", authToken) //use the token
-      .field("title", newGif.title)
-      .attach("image", newGif.image);
+      .field(newArticle);
 
     res.should.have.status(200);
     res.body.should.be.an("object");
     res.body.should.have.property("status").eql("success");
     res.body.should.have.property("data");
-    res.body.data.should.have.property("gifs_id");
+
     res.body.data.should.have
       .property("message")
-      .eql("gif image successfully posted");
+      .eql("article successfully posted");
+    res.body.data.should.have.property("articleId");
+    res.body.data.should.have.property("article");
+    res.body.data.should.have.property("title");
     res.body.data.should.have.property("createdOn");
-    res.body.data.should.have.property("title").eql(newGif.title);
-    res.body.data.should.have.property("imageUrl");
 
-    createdGifId = res.body.data.gifs_id;
-    testPublicId = res.body.data.imageUrl; // Store the public_id for deletion in the next test
+    createdArticleId = res.body.data.articleId;
   });
+  it("should update the article and return success", async () => {
+    const updateArticle = {
+      title: "update article",
+      article: "new article",
+    };
+    const res = await chai
+      .request(app)
+      .patch(`/api/v1/update_article/${createdArticleId}`)
+      .set("token", authToken) //use the token
+      .field(updateArticle);
 
-  // Test case for deleting the created gif and returning success
-  it("should delete the created gif and return success", async () => {
+    res.should.have.status(200);
+    res.body.should.be.an("object");
+    res.body.should.have.property("status").eql("success");
+    res.body.should.have.property("data");
+    res.body.data.should.have
+      .property("message")
+      .eql("Article successfully updated");
+    res.body.data.should.have.property("title");
+    res.body.data.should.have.property("article");
+  });
+  it("should delete the created post and return success", async () => {
     // Make the HTTP request with the auth token
     const res = await chai
       .request(app)
-      .delete(`/api/v1/deletegifs/${createdGifId}`)
+      .delete(`/api/v1/delete_article/${createdArticleId}`)
       .set("token", authToken);
 
-    res.should.have.status(200);
     res.body.should.be.an("object");
     res.body.should.have.property("status").eql("success");
     res.body.should.have.property("data");
     res.body.data.should.have
       .property("message")
-      .eql("gifs post successfully deleted");
+      .eql("article deleted successfully");
   });
   after(async () => {
     if (createdUserId) {
