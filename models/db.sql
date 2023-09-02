@@ -25,3 +25,19 @@ CREATE TABLE  articles (
         article TEXT,
         created_at TIMESTAMPTZ NOT NULL  NOW(),
         updated_at TIMESTAMPTZ NOT NULL  NOW());
+
+         CREATE TABLE article_comments (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      article_id INTEGER NOT NULL REFERENCES articles(id),
+      comment TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    
+    CREATE TABLE gif_comments (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      gif_id INTEGER NOT NULL REFERENCES upload(gifs_id),
+      comment TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )

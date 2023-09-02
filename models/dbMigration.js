@@ -52,6 +52,23 @@ async function dbMigration() {
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )`;
     await client.query(articles);
+
+    const articleComment = `CREATE TABLE IF NOT EXISTS article_comments (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      article_id INTEGER NOT NULL REFERENCES articles(id),
+      comment TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+    await client.query(articleComment);
+    const gifComment = `CREATE TABLE IF NOT EXISTS gif_comments (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      gif_id INTEGER NOT NULL REFERENCES upload(gifs_id),
+      comment TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
+    await client.query(gifComment);
   } catch (error) {
     console.error("Error during migration:", error.message);
   } finally {
