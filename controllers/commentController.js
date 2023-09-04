@@ -26,6 +26,7 @@ class CommentController {
       res.json({
         status: "success",
         data: {
+          id: myGifComment.rows[0].id,
           message: "comment successfully created",
           createdOn: myGifComment.rows[0].created_at,
           giftitle: getGifTitle.rows[0].title,
@@ -33,7 +34,7 @@ class CommentController {
         },
       });
     } catch (error) {
-      res.status(500).json(error.message);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   }
   async articleComment(req, res) {
@@ -55,6 +56,8 @@ class CommentController {
       res.json({
         status: "success",
         data: {
+          id: myArticleComment.rows[0].id,
+
           message: "comment successfully created",
           createdOn: myArticleComment.rows[0].created_at,
           articletitle: getArticle.rows[0].title,
@@ -63,7 +66,7 @@ class CommentController {
         },
       });
     } catch (error) {
-      res.status(500).json(error.message);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

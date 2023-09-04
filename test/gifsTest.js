@@ -81,24 +81,21 @@ describe("GifsController", () => {
   });
 
   // Test case for deleting the created gif and returning success
-  it("should delete the created gif and return success", async () => {
+  it("should delete the created gif and return success", (done) => {
     // Make the HTTP request with the auth token
-    const res = await chai
+    chai
       .request(app)
       .delete(`/api/v1/deletegifs/${createdGifId}`)
-      .set("token", authToken);
-
-    res.should.have.status(200);
-    res.body.should.be.an("object");
-    res.body.should.have.property("status").eql("success");
-    res.body.should.have.property("data");
-    res.body.data.should.have
-      .property("message")
-      .eql("gifs post successfully deleted");
-  });
-  after(async () => {
-    if (createdUserId) {
-      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
-    }
+      .set("token", authToken)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.an("object");
+        res.body.should.have.property("status").eql("success");
+        res.body.should.have.property("data");
+        res.body.data.should.have
+          .property("message")
+          .eql("gifs post successfully deleted");
+        done();
+      });
   });
 });

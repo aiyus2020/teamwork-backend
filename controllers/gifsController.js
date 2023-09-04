@@ -57,6 +57,7 @@ class GifsController {
       res.json({
         status: "success",
         data: {
+          upload: upload.rows[0].cloud_public_id,
           message: "gifs post successfully deleted",
         },
       });
