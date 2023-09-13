@@ -3,7 +3,7 @@ const { gifCommentQuery } = require("../queries/commentQuery");
 const { findId } = require("../queries/gifsQuery");
 const {
   articleCommentQuery,
-  findArticleId,
+  findArticleById,
 } = require("../queries/commentQuery");
 class CommentController {
   //gif comment function
@@ -51,7 +51,7 @@ class CommentController {
       ]);
 
       //query to access the gif table and so as to get the its title
-      const getArticle = await client.query(findArticleId, [id]);
+      const getArticle = await client.query(findArticleById, [id]);
 
       res.json({
         status: "success",
