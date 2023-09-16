@@ -16,9 +16,7 @@ class CommentController {
         id,
         comment,
       ]);
-      if (myGifComment.rows.comment.le == 0) {
-        return res;
-      }
+
       res.json({
         status: "success",
         data: {
