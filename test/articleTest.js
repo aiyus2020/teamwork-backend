@@ -98,23 +98,20 @@ describe("articles", () => {
     res.body.data.should.have.property("title");
     res.body.data.should.have.property("article");
   });
-  it("should delete the created post and return success", async () => {
+  it("should delete the created post and return success", (done) => {
     // Make the HTTP request with the auth token
-    const res = await chai
+    chai
       .request(app)
       .delete(`/api/v1/delete_article/${createdArticleId}`)
-      .set("token", authToken);
-
-    res.body.should.be.an("object");
-    res.body.should.have.property("status").eql("success");
-    res.body.should.have.property("data");
-    res.body.data.should.have
-      .property("message")
-      .eql("article deleted successfully");
-  });
-  after(async () => {
-    if (createdUserId) {
-      await client.query(deleteUserQuery, [createdUserId]); // Perform the delete
-    }
+      .set("token", authToken)
+      .end((err, res) => {
+        res.body.should.be.an("object");
+        res.body.should.have.property("status").eql("success");
+        res.body.should.have.property("data");
+        res.body.data.should.have
+          .property("message")
+          .eql("article deleted successfully");
+        done();
+      });
   });
 });
