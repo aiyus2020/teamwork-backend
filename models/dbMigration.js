@@ -1,10 +1,12 @@
 const { Client } = require("pg");
+
+// Replace with your Supabase credentials
+const supabaseUrl = "https://ulawiyumjpyyotizdbzi.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVsYXdpeXVtanB5eW90aXpkYnppIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5NDk0MTU3OCwiZXhwIjoyMDEwNTE3NTc4fQ.9gqzn3MErIurwTj_KcjnZT4C8D8s-Gurn7Rt5WPqHB0";
+
 const client = new Client({
-  user: "postgres",
-  host: "localhost",
-  database: "Teamwork",
-  password: "aiyudubie10",
-  port: 5432,
+  connectionString: `postgresql://postgres:aiyudubie10@db.ulawiyumjpyyotizdbzi.supabase.co:5432/postgres`,
 });
 
 async function dbMigration() {
