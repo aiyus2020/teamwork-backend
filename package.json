@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha -timeout 100000"
+    "test": "mocha -timeout 100000",
+    "build": "your-build-command", 
+  "deploy": "cyclic deploy"
   },
   "author": "",
   "license": "ISC",
