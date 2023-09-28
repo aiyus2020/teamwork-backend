@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const app = express();
 const user = require("./routes/userRoutes");
 const gifs = require("./routes/gifsRoute");
@@ -31,7 +32,7 @@ app.use("/", article);
 app.use("/", user);
 app.use("/", comment);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 // Listening for server
 const server = app.listen(PORT, () => {

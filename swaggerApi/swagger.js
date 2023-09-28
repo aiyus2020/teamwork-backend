@@ -16,7 +16,7 @@ const swaggerDocument = {
   },
   servers: [
     {
-      url: "http://localhost:5000",
+      url: "https://teamwork-aynw.onrender.com",
       description: "dev server",
     },
   ],
