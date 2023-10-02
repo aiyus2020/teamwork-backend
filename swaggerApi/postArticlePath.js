@@ -8,9 +8,9 @@ const postArticlePath = {
       ],
       summary: "post articles",
       requestBody: {
-        required: false,
+        required: true,
         content: {
-          "aplication/json": {
+          "application/json": {
             schema: {
               type: "object",
               properties: {
@@ -37,7 +37,7 @@ const postArticlePath = {
                     type: "string",
                   },
                   articleId: {
-                    type: "interger",
+                    type: "integer",
                   },
                   title: {
                     type: "string",
@@ -69,4 +69,5 @@ const postArticlePath = {
     },
   },
 };
+
 module.exports = { postArticlePath };
