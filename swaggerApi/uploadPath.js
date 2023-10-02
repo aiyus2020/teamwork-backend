@@ -1,6 +1,11 @@
 const uploadPath = {
   "/api/v1/gifs_upload": {
     post: {
+      security: [
+        {
+          apiKeyAuth: { type: "apiKey", in: "header", name: "token" },
+        },
+      ],
       summary: "Upload a new GIF",
       requestBody: {
         required: true,

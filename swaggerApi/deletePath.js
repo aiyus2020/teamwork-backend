@@ -13,6 +13,11 @@ const deletePath = {
           },
         },
       ],
+      security: [
+        {
+          apiKeyAuth: { type: "apiKey", in: "header", name: "token" },
+        },
+      ],
       responses: {
         200: {
           description: "Success",

@@ -20,6 +20,15 @@ const swaggerDocument = {
       description: "dev server",
     },
   ],
+  components: {
+    securitySchemes: {
+      apiKeyAuth: {
+        type: "apiKey",
+        in: "header",
+        name: "token",
+      },
+    },
+  },
   paths: {
     ...registerPath,
     ...loginPath,

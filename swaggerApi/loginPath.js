@@ -1,6 +1,11 @@
 const loginPath = {
   "/api/v1/login": {
     post: {
+      security: [
+        {
+          apiKeyAuth: { type: "apiKey", in: "header", name: "token" },
+        },
+      ],
       summary: "User login",
       requestBody: {
         required: true,

@@ -13,6 +13,11 @@ const editArticlePath = {
           },
         },
       ],
+      security: [
+        {
+          apiKeyAuth: { type: "apiKey", in: "header", name: "token" },
+        },
+      ],
       requestBody: {
         required: true,
         content: {
