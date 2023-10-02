@@ -8,7 +8,6 @@ const postArticlePath = {
       ],
       summary: "post articles",
       requestBody: {
-        required: true,
         content: {
           "aplication/json": {
             schema: {
