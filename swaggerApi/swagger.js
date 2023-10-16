@@ -8,7 +8,7 @@ const { editArticlePath } = require("../swaggerApi/updateArticlePath");
 const { articleCommentPath } = require("../swaggerApi/articleCommentPAth");
 const { gifCommentPath } = require("../swaggerApi/gifcommentpath");
 const { getArtSwagger } = require("../swaggerApi/getArticlebyId");
-const { getGifSwagger } = require("../swaggerApi/getGifbyId");
+const { getGifbyId } = require("../swaggerApi/getGifbyId");
 const swaggerDocument = {
   openapi: "3.0.0",
   info: {
@@ -19,6 +19,10 @@ const swaggerDocument = {
   servers: [
     {
       url: "https://teamwork-aynw.onrender.com",
+      description: "dev server",
+    },
+    {
+      url: "localhost://10000",
       description: "dev server",
     },
   ],
@@ -42,7 +46,7 @@ const swaggerDocument = {
     ...articleCommentPath,
     ...gifCommentPath,
     ...getArtSwagger,
-    ...getGifSwagger,
+    ...getGifbyId,
   },
 };
 
