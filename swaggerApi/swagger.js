@@ -7,6 +7,8 @@ const { deleteArticlePath } = require("../swaggerApi/deleteArticlePath");
 const { editArticlePath } = require("../swaggerApi/updateArticlePath");
 const { articleCommentPath } = require("../swaggerApi/articleCommentPAth");
 const { gifCommentPath } = require("../swaggerApi/gifcommentpath");
+const { getArtSwagger } = require("../swaggerApi/getArticlebyId");
+const { getGifSwagger } = require("../swaggerApi/getGifbyId");
 const swaggerDocument = {
   openapi: "3.0.0",
   info: {
@@ -39,6 +41,8 @@ const swaggerDocument = {
     ...deleteArticlePath,
     ...articleCommentPath,
     ...gifCommentPath,
+    ...getArtSwagger,
+    ...getGifSwagger,
   },
 };
 
