@@ -6,7 +6,11 @@ class GetGifArticle {
       const { gif_id } = req.params;
 
       const result = await client.query(getGif, [gif_id]);
-
+      const mappedData = result.rows.map((item) => ({
+        comment_id: item.comment_id,
+        user_id: item.user_id,
+        gif_id: item.gif_id,
+      }));
       if (result.length === 0) {
         // No GIF found with the specified ID
         return res.status(404).json({ message: "GIF not found" });
@@ -19,18 +23,7 @@ class GetGifArticle {
           createdOn: result.rows[0].created_at,
           title: result.rows[0].title,
           imageUrl: result.rows[0].image_url,
-          comments: [
-            {
-              commentId: result.rows[0].comment_id,
-              authorId: result.rows[0].id,
-              comment: result.rows[0].gif_comment,
-            },
-            {
-              commentId: result.rows[0].comment_id,
-              authorId: result.rows[0].id,
-              comment: result.rows[0].gif_comment,
-            },
-          ],
+          comments: [mappedData],
         },
       });
     } catch (error) {
@@ -42,6 +35,11 @@ class GetGifArticle {
       const { id } = req.params;
 
       const result = await client.query(getArts, [id]);
+      const mappedData = result.rows.map((item) => ({
+        comment_id: item.comment_id,
+        user_id: item.user_id,
+        article_id: item.article_id,
+      }));
 
       if (result.length === 0) {
         // No GIF found with the specified ID
@@ -55,18 +53,7 @@ class GetGifArticle {
           createdOn: result.rows[0].created_at,
           title: result.rows[0].title,
           article: result.rows[0].article,
-          comments: [
-            {
-              commentId: result.rows[0].comment_id,
-              authorId: result.rows[0].user_id,
-              comment: result.rows[0].article_comment,
-            },
-            {
-              commentId: result.rows[0].comment_id,
-              authorId: result.rows[0].user_id,
-              comment: result.rows[0].article_comment,
-            },
-          ],
+          comments: [mappedData],
         },
       });
     } catch (error) {
