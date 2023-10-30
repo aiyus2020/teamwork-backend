@@ -1,6 +1,6 @@
 const client = require("../models/db");
 const { getGif, getArts } = require("../queries/getArtGifQuery");
-class GetgifArticle {
+class GetGifArticle {
   async getGif(req, res) {
     try {
       const { gif_id } = req.params;
@@ -74,4 +74,4 @@ class GetgifArticle {
     }
   }
 }
-module.exports = new GetgifArticle();
+module.exports = new GetGifArticle();
