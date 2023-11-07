@@ -6,6 +6,7 @@ const user = require("./routes/userRoutes");
 const gifs = require("./routes/gifsRoute");
 const comment = require("./routes/commentRoute");
 const article = require("./routes/articleRoute");
+const gifArt = require("./routes/getArtGifRoutes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swaggerApi/swagger");
 const fileUpload = require("express-fileupload");
@@ -31,6 +32,7 @@ app.use("/", gifs);
 app.use("/", article);
 app.use("/", user);
 app.use("/", comment);
+app.use("/", gifArt);
 
 const PORT = process.env.PORT || 10000;
 

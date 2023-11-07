@@ -1,26 +1,19 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const cloudinary = require("../utlis/cloudinary");
-const app = require("../server");
-const { findId, deleteGifquery } = require("../queries/gifsQuery");
-const { deleteUserQuery } = require("../queries/userQuery");
-const {
-  deleteArticleComment,
-  deleteGifComment,
-} = require("../queries/commentQuery");
-const { describe, it, before, after } = require("mocha");
-const client = require("../models/db");
+const app = require("../server"); // Import your Express app
+const { describe, it, before } = require("mocha");
+const client = require("../models/db"); // Import your database client
+const { getGif, getArts } = require("../queries/getArtGifQuery"); // Import your queries
 
 chai.use(chaiHttp);
 chai.should();
 
-describe("Articles", () => {
-  // Declaring global variables
-
-  let createdArticleId;
+describe("GetgifArticle", () => {
+  // Declare global variables
   let createdGifId;
+  let createdArtId;
   let createdUserId;
-  let authToken; // Authentication token
+  let authToken;
   let gif_id;
   let articleId;
   let upload;
@@ -60,12 +53,14 @@ describe("Articles", () => {
     const newGif = {
       title: "Test Gif",
       image: "./assets/SmallFullColourGIF.gif",
+      comment: "just a comment",
     };
     const gifRes = await chai
       .request(app)
       .post("/api/v1/gifs_upload")
       .set("token", authToken)
-      .field("title", newGif.title) // Use .field() correctly to set form field
+      .field("title", newGif.title)
+      .field("title", newGif.comment)
       .attach("image", newGif.image)
       .then((res) => {
         gif_id = res.body.data.gifs_id;
@@ -74,6 +69,7 @@ describe("Articles", () => {
     const newArticle = {
       title: "Test article",
       article: "my article",
+      comment: "just a comment",
     };
     const articleRes = await chai
       .request(app)
@@ -85,62 +81,44 @@ describe("Articles", () => {
       });
   });
 
-  // Test case for creating a comment on a GIF
-  it("should create a comment on a GIF", async () => {
-    const commentData = {
-      comment: "This is a test comment on a GIF",
-    };
+  // Test the getGif route
+  it("should get a GIF by ID", async () => {
+    // Use the ID of a created GIF from your test data
 
     const res = await chai
       .request(app)
-      .post(`/api/v1/gif_comment/${gif_id}`)
-      .set("token", authToken)
-      .send(commentData);
+      .get(`/api/v1/gif&comment/${gif_Id}`)
+      .set("token", authToken);
 
     res.should.have.status(200);
     res.body.should.be.an("object");
     res.body.should.have.property("status").eql("success");
     res.body.should.have.property("data");
-    res.body.data.should.have
-      .property("message")
-      .eql("comment successfully created");
-    res.body.data.should.have.property("createdOn");
-
-    upload = await client.query(findId, [createdGifId]);
-    console.log(upload);
-  });
-
-  // Test case for creating a comment on an article
-  it("should create a comment on an article", async () => {
-    const commentData = {
-      comment: "This is a test comment on an article",
-    };
-
-    const res = await chai
-      .request(app)
-      .post(`/api/v1/article_comment/${articleId}`)
-      .set("token", authToken)
-      .send(commentData);
-
-    res.should.have.status(200);
-    res.body.should.be.an("object");
-    res.body.should.have.property("status").eql("success");
-    res.body.should.have.property("data");
-    res.body.data.should.have
-      .property("message")
-      .eql("comment successfully created");
-    res.body.data.should.have.property("createdOn");
     res.body.data.should.have.property("id");
+    res.body.data.should.have.property("createdOn");
+    res.body.data.should.have.property("title");
+    res.body.data.should.have.property("imageUrl");
+    res.body.data.should.have.property("comments").be.an("array");
 
-    createdArticleId = res.body.data.id;
-    console.log(createdArticleId);
+    // Add more specific assertions for the response data.
   });
 
-  // After all tests, you can clean up any test data if needed
-  after(async () => {
-    await client.query(deleteArticleComment, [createdArticleId]);
-    await client.query(deleteGifComment, [createdGifId]);
-    await cloudinary.uploader.destroy(upload.rows[0].cloud_public_id);
-    await client.query(deleteGifquery, [createdGifId]);
+  // Test the getArt route
+  it("should get an article by ID", async () => {
+    // Use the ID of a created article from your test data
+
+    const res = await chai
+      .request(app)
+      .get(`/api/v1/article&comment/${articleId}`);
+
+    res.should.have.status(200);
+    res.body.should.be.an("object");
+    res.body.should.have.property("status").eql("success");
+    res.body.should.have.property("data");
+    res.body.data.should.have.property("id");
+    res.body.data.should.have.property("createdOn");
+    res.body.data.should.have.property("articletitle");
+    res.body.data.should.have.property("article");
+    res.body.data.should.have.property("comments").be.an("array");
   });
 });
